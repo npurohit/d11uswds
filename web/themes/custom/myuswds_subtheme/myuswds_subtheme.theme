@@ -1,0 +1,33 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * @file
+ * Functions to support theming in the myuswds_subtheme theme.
+ */
+
+/**
+ * Implements hook_preprocess_HOOK() for html.html.twig.
+ */
+function myuswds_subtheme_preprocess_html(array &$variables): void {
+
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for page.html.twig.
+ */
+function myuswds_subtheme_preprocess_page(array &$variables) {
+
+    // Set the path to the base theme.
+    $variables['active_theme_path'] = base_path() . \Drupal::theme()->getActiveTheme()->getPath();
+    $variables['uswds_images'] = $variables['active_theme_path'] . 'assets/img/'; 
+}
+
+
+/**
+ * Implements hook_preprocess_HOOK() for node.html.twig.
+ */
+function myuswds_subtheme_preprocess_node(array &$variables): void {
+
+}

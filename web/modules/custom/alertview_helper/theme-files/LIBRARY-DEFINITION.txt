@@ -1,0 +1,23 @@
+# Library Definition for YOUR_THEME.libraries.yml
+#
+# Add this to your theme's libraries file:
+# themes/custom/YOUR_THEME/YOUR_THEME.libraries.yml
+
+view-block-navigation:
+  version: 1.x
+  js:
+    js/view-block-navigation.js: {}
+  css:
+    theme:
+      css/view-block-navigation.css: {}
+  dependencies:
+    - core/drupal
+    - core/jquery
+    - core/drupal.ajax
+    - uswds_base/uswds-init
+
+# NOTE: If your theme already has a libraries.yml file, 
+# just add the 'view-block-navigation' section above to it.
+# 
+# Make sure to replace 'uswds_base/uswds-init' with the correct
+# dependency if your USWDS theme has a different library name.

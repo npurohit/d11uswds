@@ -1,0 +1,20 @@
+name: myuswds_subtheme
+type: theme
+base theme: uswds_base
+description: Custom USWDS Base theme with responsive, mobile-first layout
+package: Custom
+core_version_requirement: ^10 || ^11
+libraries:
+  - myuswds_subtheme/global
+regions:
+  header: 'Header'
+  primary_menu: 'Primary menu'
+  secondary_menu: 'Secondary menu'
+  page_top: 'Page top'
+  page_bottom: 'Page bottom'
+  featured: 'Featured'
+  breadcrumb: 'Breadcrumb'
+  content: 'Content'
+  sidebar_first: 'Sidebar first'
+  sidebar_second: 'Sidebar second'
+  footer: 'Footer'

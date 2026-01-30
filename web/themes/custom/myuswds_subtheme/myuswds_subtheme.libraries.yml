@@ -1,0 +1,23 @@
+global:
+  version: 1.x
+  js:
+    # 1. ADD: Initializer script (must have heavy negative weight)
+    assets/js/uswds-init.min.js: { weight: -100 }
+    # 2. ADD: Primary USWDS library
+    assets/js/uswds.min.js: {}
+    # Keep your custom theme JS
+    js/myuswds-subtheme.js: {}
+  css:
+    theme:
+      # 3. ADD: Main USWDS Stylesheet
+      assets/css/styles.css: {}
+      # Keep your custom print styles
+      css/theme/print.css: { media: print }
+    # You can keep these if you plan to write custom overrides in these files
+    base:
+      css/base/elements.css: {}
+  
+  dependencies:
+    - core/jquery
+    - core/once
+  

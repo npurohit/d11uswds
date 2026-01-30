@@ -1,0 +1,7 @@
+/* sass/styles.scss */
+
+// 1. This loads the core library AND your custom settings from _uswds-theme.scss
+@forward "uswds-theme";
+
+// 2. This loads your project-specific custom CSS
+@forward "uswds-theme-custom-styles";

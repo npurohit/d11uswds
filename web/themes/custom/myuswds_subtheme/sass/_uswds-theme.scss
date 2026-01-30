@@ -1,0 +1,25 @@
+/*
+----------------------------------------
+USWDS with settings overrides
+----------------------------------------
+Uncomment the following lines and add a list of changed settings
+in the form $setting: value,
+----------------------------------------
+*/
+
+
+/* _uswds-theme.scss */
+@use "uswds-core" with (
+  // All your theme settings go here
+  $theme-color-primary-dark: "blue-70v",
+  
+  // This must be the RELATIVE path from assets/css to assets/img
+  $theme-image-path: "../img", 
+  
+  // Optional: If fonts also break later, set this too
+  $theme-font-path: "../fonts",
+  
+  // Your other settings...
+  $theme-show-notifications: false   // The setting you can use to silence the console messages
+
+  );
