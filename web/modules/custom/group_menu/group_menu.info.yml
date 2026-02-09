@@ -1,0 +1,7 @@
+name: Group Menu
+type: module
+description: Provides per-group menu functionality for the Groups module.
+core_version_requirement: ^10 || ^11
+package: Custom
+dependencies:
+  - drupal:group

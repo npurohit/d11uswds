@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * Implements hook_theme().
+ */
+function group_menu_theme() {
+  return [
+    'group_menu' => [
+      'variables' => [
+        'items' => [],
+      ],
+      'template' => 'group-menu',
+    ],
+  ];
+}
