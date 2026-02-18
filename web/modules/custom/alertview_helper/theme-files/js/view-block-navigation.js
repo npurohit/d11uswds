@@ -1,168 +1,76 @@
-/**
- * @file
- * View Block Navigation with USWDS 3.0 styling.
- * 
- * This file should be placed in: themes/custom/YOUR_THEME/js/view-block-navigation.js
- * 
- * IMPORTANT: Update the sprite.svg paths below to match your USWDS installation.
- * Common paths:
- * - /libraries/uswds/dist/img/sprite.svg
- * - /themes/contrib/uswds_base/uswds/dist/img/sprite.svg
- * - /themes/custom/YOUR_THEME/uswds/dist/img/sprite.svg
- */
-
-(function ($, Drupal, drupalSettings) {
+/* Custom JS file for CMSGOV EPS USWDS subtheme */ 
+/* New code based on block_1 */
+/* Custom JS file for CMSGOV EPS USWDS subtheme */ 
+(function ($, Drupal, once) {
   'use strict';
 
   Drupal.behaviors.viewBlockNavigation = {
     attach: function (context, settings) {
-      // TODO: Replace 'YOUR_VIEW_ID' with your actual view machine name
-      var $viewBlock = $('.view-id-YOUR_VIEW_ID', context).once('view-block-nav');
+      // 1. Use your custom class
+      const elements = once('view-block-nav', '.js-alert-notification', context);
       
-      if ($viewBlock.length === 0) return;
-      
-      var originalContent = null;
-      var $viewContent = $viewBlock.find('.view-content');
-
-      // Intercept clicks on node title links
-      $viewBlock.on('click', '.views-field-title a, .node__title a, .usa-link', function (e) {
-        e.preventDefault();
-        var nodeUrl = $(this).attr('href');
+      elements.forEach(function (el) {
+        var $viewBlock = $(el);
+        // 2. Fallback: if .view-content doesn't exist, use the block itself
+        var $viewContent = $viewBlock.find('.view-content').length ? 
+                           $viewBlock.find('.view-content') : 
+                           $viewBlock;
         
-        // Store original content first time
-        if (!originalContent) {
-          originalContent = $viewContent.html();
-        }
+        var originalContent = null;
 
-        // Show USWDS 3.0 loading state
-        // TODO: Update sprite.svg path to match your USWDS installation
-        $viewContent.html(
-          '<div class="usa-alert usa-alert--info usa-alert--slim loading-node" role="status">' +
-            '<div class="usa-alert__body">' +
-              '<div class="display-flex flex-align-center">' +
-                '<svg class="usa-icon usa-icon--size-3 text-primary margin-right-1 loading-spinner" aria-hidden="true" focusable="false" role="img">' +
-                  '<use xlink:href="/libraries/uswds/dist/img/sprite.svg#autorenew"></use>' +
-                '</svg>' +
-                '<p class="usa-alert__text margin-0">Loading content...</p>' +
-              '</div>' +
-            '</div>' +
-          '</div>'
-        );
+        // Use delegated events on the $viewBlock
+        $viewBlock.on('click', '.views-field-title a, .usa-link', function (e) {
+          e.preventDefault();
+          var nodeUrl = $(this).attr('href');
+          
+          if (!originalContent) {
+            originalContent = $viewContent.html();
+          }
 
-        // Load the full node page
-        $.ajax({
-          url: nodeUrl,
-          method: 'GET',
-          success: function (response) {
-            // Extract the main node content from the response
-            var $response = $(response);
-            var $nodeContent = $response.find('.node--full, article.node, .node, main .usa-prose').first();
-            
-            if ($nodeContent.length) {
-              // Create USWDS 3.0 styled back button
-              // TODO: Update sprite.svg path to match your USWDS installation
-              var backButton = 
-                '<div class="view-block-back margin-bottom-3">' +
-                  '<button class="usa-button usa-button--outline back-to-view" type="button">' +
-                    '<svg class="usa-icon" aria-hidden="true" focusable="false" role="img">' +
-                      '<use xlink:href="/libraries/uswds/dist/img/sprite.svg#arrow_back"></use>' +
-                    '</svg>' +
-                    'Back to list' +
-                  '</button>' +
-                '</div>';
+          // Show USWDS loading state
+          $viewContent.html(
+            '<div class="usa-alert usa-alert--info usa-alert--slim" role="status">' +
+              '<div class="usa-alert__body"><p class="usa-alert__text">Loading content...</p></div>' +
+            '</div>'
+          );
+
+          $.ajax({
+            url: nodeUrl,
+            method: 'GET',
+            success: function (response) {
+              var $response = $(response);
+              // Target common USWDS/Drupal content wrappers
+              var $nodeContent = $response.find('main, .node--full, article, .usa-prose').first();
               
-              // Inject back button and node content with USWDS 3.0 grid
-              $viewContent.html(
-                '<div class="grid-row">' +
-                  '<div class="grid-col-12">' +
-                    backButton +
-                    '<div class="view-block-node-wrapper usa-prose"></div>' +
-                  '</div>' +
-                '</div>'
-              );
-              
-              $viewContent.find('.view-block-node-wrapper').html($nodeContent);
-              
-              // Scroll to top of block smoothly
-              $viewBlock[0].scrollIntoView({ behavior: 'smooth', block: 'start' });
-              
-              // Re-attach Drupal behaviors to new content
-              Drupal.attachBehaviors($viewContent[0], drupalSettings);
-              
-              // Announce to screen readers
-              announceToScreenReader('Content loaded successfully');
-              
-            } else {
-              showErrorMessage($viewContent, 'Could not load content.');
+              if ($nodeContent.length) {
+                var backButton = 
+                  '<div class="margin-bottom-3">' +
+                    '<button class="usa-button usa-button--outline back-to-view" type="button">Back to list</button>' +
+                  '</div>';
+                
+                $viewContent.html('<div class="usa-prose">' + backButton + '<div class="node-wrapper"></div></div>');
+                $viewContent.find('.node-wrapper').html($nodeContent.html());
+                
+                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+                // Re-attach behaviors
+                Drupal.attachBehaviors($viewContent[0], settings);
+              }
             }
-          },
-          error: function (xhr, status, error) {
-            showErrorMessage($viewContent, 'Error loading content. Please try again.');
-            console.error('AJAX Error:', status, error);
+          });
+        });
+
+        // Back button handler
+        $viewBlock.on('click', '.back-to-view', function (e) {
+          e.preventDefault();
+          if (originalContent) {
+            $viewContent.html(originalContent);
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            Drupal.attachBehaviors($viewContent[0], settings);
           }
         });
       });
-
-      // Handle back button clicks
-      $viewBlock.on('click', '.back-to-view', function (e) {
-        e.preventDefault();
-        
-        if (originalContent) {
-          // Fade out current content
-          $viewContent.css('opacity', '0.5');
-          
-          setTimeout(function() {
-            $viewContent.html(originalContent);
-            $viewContent.css('opacity', '1');
-            
-            // Scroll back to top of block
-            $viewBlock[0].scrollIntoView({ behavior: 'smooth', block: 'start' });
-            
-            // Re-attach behaviors to restored content
-            Drupal.attachBehaviors($viewContent[0], drupalSettings);
-            
-            // Announce to screen readers
-            announceToScreenReader('Returned to list view');
-          }, 200);
-        }
-      });
-
-      // Helper function to show error messages with USWDS 3.0 alert
-      function showErrorMessage($container, message) {
-        // TODO: Update sprite.svg path to match your USWDS installation
-        $container.html(
-          '<div class="usa-alert usa-alert--error" role="alert">' +
-            '<div class="usa-alert__body">' +
-              '<h4 class="usa-alert__heading">Error</h4>' +
-              '<p class="usa-alert__text">' + message + '</p>' +
-              '<button class="usa-button usa-button--secondary back-to-view margin-top-2" type="button">' +
-                '<svg class="usa-icon" aria-hidden="true" focusable="false" role="img">' +
-                  '<use xlink:href="/libraries/uswds/dist/img/sprite.svg#arrow_back"></use>' +
-                '</svg>' +
-                'Back to list' +
-              '</button>' +
-            '</div>' +
-          '</div>'
-        );
-      }
-
-      // Helper function for screen reader announcements
-      function announceToScreenReader(message) {
-        var $announcement = $('<div>', {
-          'class': 'usa-sr-only',
-          'role': 'status',
-          'aria-live': 'polite',
-          'aria-atomic': 'true',
-          'text': message
-        });
-        
-        $('body').append($announcement);
-        
-        setTimeout(function() {
-          $announcement.remove();
-        }, 1000);
-      }
     }
   };
-
-})(jQuery, Drupal, drupalSettings);
+})(jQuery, Drupal, once);
+/* End of new code based on block_1 */
